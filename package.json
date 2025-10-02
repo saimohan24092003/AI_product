@@ -14,3 +14,7 @@
   "author": "CourseCraft AI",
   "license": "MIT"
 }
+{
+  "type": "module"
+}
+
