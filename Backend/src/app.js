@@ -24,144 +24,37 @@ import legacyEndpointsRouter from './routes/legacy-endpoints.js';
 import analyticsRouter from './routes/analytics.js';
 import commentsRouter from './routes/comments.js';
 
-// Create Express app FIRST
-// app.js
-const express = require("express");
-
-// middleware + routes
-app.use(express.json());
-app.use("/auth", require("./routes/auth"));
-app.use("/chat", require("./routes/chat"));
-
-// ❌ Do not use app.listen()
-// ✅ Export the app for Vercel
-module.exports = app;
-
+// Create Express app
 const app = express();
 
-// Initialize MongoDB connection
-connectToDatabase().catch(error => {
-  console.error('Failed to connect to MongoDB:', error);
-  process.exit(1);
-});
-
-// Security headers
-app.use(helmet());
-
-// CORS configuration - Allow requests from multiple origins including local files
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, postman, or local files)
-    if (!origin) return callback(null, true);
-
-    // List of allowed origins
-    const allowedOrigins = [
-      env.frontendOrigin,
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
-      'http://localhost:8080',
-      'http://127.0.0.1:8080'
-    ];
-
-    // Allow file:// protocol for local development
-    if (origin.startsWith('file://')) {
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    }
-
-    // For development, be more permissive with localhost
-    if (env.nodeEnv === 'development' && origin.includes('localhost')) {
-      return callback(null, true);
-    }
-
-    return callback(null, true); // Allow all origins in development
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  preflightContinue: false,
-  optionsSuccessStatus: 200
-}));
-
-// Body parser with increased limit for file uploads
-app.use(express.json({ limit: '50mb' }));
+// Middleware
+app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(helmet());
+app.use(cors({
+  origin: [
+    env.frontendOrigin,
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
+app.use(httpLogger);
 
-// Serve static files from public directory
-app.use(express.static('public'));
-
-// Session configuration for OAuth
+// Session + Passport
 app.use(session({
   secret: env.sessionSecret,
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    secure: env.nodeEnv === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+  cookie: { secure: env.nodeEnv === 'production', httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
-
-// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Request logger
-app.use(httpLogger);
+// Rate limiter
+app.use(rateLimit({ windowMs: 60*1000, max: 120 }));
 
-// Basic healthcheck endpoints
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
-app.get('/api/health', async (req, res) => {
-  try {
-    const { getConnectionStatus } = await import('./config/database.js');
-    const dbStatus = getConnectionStatus();
-
-    res.json({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      services: {
-        api: 'healthy',
-        database: {
-          status: dbStatus.isConnected ? 'connected' : 'disconnected',
-          readyState: dbStatus.readyState,
-          host: dbStatus.host,
-          name: dbStatus.name
-        }
-      }
-    });
-  } catch (error) {
-    res.status(503).json({
-      status: 'error',
-      timestamp: new Date().toISOString(),
-      services: {
-        api: 'healthy',
-        database: {
-          status: 'error',
-          error: error.message
-        }
-      }
-    });
-  }
-});
-
-// Global rate limit
-const globalLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 120,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(globalLimiter);
-
-// Routes (defined AFTER app creation)
+// Routes
 app.use('/api/auth', authRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/strategy', strategyRouter);
@@ -173,9 +66,17 @@ app.use('/api/analytics', analyticsRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api', legacyEndpointsRouter);
 
+// Healthcheck
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
 // Error handler
 app.use(errorHandler);
 
-// REMOVE the duplicate app.listen() - this is handled in server.js
+// Connect to MongoDB
+connectToDatabase().catch(error => {
+  console.error('Failed to connect to MongoDB:', error);
+  process.exit(1);
+});
 
+// Export app for Vercel
 export default app;
