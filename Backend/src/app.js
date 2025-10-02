@@ -25,6 +25,18 @@ import analyticsRouter from './routes/analytics.js';
 import commentsRouter from './routes/comments.js';
 
 // Create Express app FIRST
+// app.js
+const express = require("express");
+
+// middleware + routes
+app.use(express.json());
+app.use("/auth", require("./routes/auth"));
+app.use("/chat", require("./routes/chat"));
+
+// ❌ Do not use app.listen()
+// ✅ Export the app for Vercel
+module.exports = app;
+
 const app = express();
 
 // Initialize MongoDB connection
