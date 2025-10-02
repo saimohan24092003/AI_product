@@ -1,9 +1,14 @@
+// app.js
+
+// Core dependencies
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import session from 'express-session';
 import passport from 'passport';
 import rateLimit from 'express-rate-limit';
+
+// Config and utilities
 import { env } from './config/env.js';
 import { httpLogger } from './utils/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -12,7 +17,7 @@ import { connectToDatabase } from './config/database.js';
 // Import OAuth configuration
 import './config/passport.js';
 
-// Import routes
+// Import routers
 import chatRouter from './routes/chat.js';
 import authRouter from './routes/auth.js';
 import strategyRouter from './routes/strategy.js';
@@ -25,10 +30,10 @@ import analyticsRouter from './routes/analytics.js';
 import commentsRouter from './routes/comments.js';
 
 // Create Express app
-const app = express();
+const app = express(); // ✅ Must be first
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(helmet());
 app.use(cors({
@@ -46,13 +51,14 @@ app.use(session({
   secret: env.sessionSecret,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: env.nodeEnv === 'production', httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { secure: env.nodeEnv === 'production', httpOnly: true, maxAge: 24*60*60*1000 }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Rate limiter
-app.use(rateLimit({ windowMs: 60*1000, max: 120 }));
+const globalLimiter = rateLimit({ windowMs: 60*1000, max: 120 });
+app.use(globalLimiter);
 
 // Routes
 app.use('/api/auth', authRouter);
