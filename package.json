@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Frontend server for CourseCraft AI with CORS support",
   "main": "serve_frontend.js",
+  "type": "module",
   "scripts": {
     "start": "node serve_frontend.js",
     "frontend": "node serve_frontend.js"
@@ -14,7 +15,5 @@
   "author": "CourseCraft AI",
   "license": "MIT"
 }
-{
-  "type": "module"
-}
+
 
