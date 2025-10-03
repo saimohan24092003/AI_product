@@ -1,31 +1,10 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "public/",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "serve_frontend.js",
-      "use": "@vercel/node",
-      "config": {
-        "runtime": "nodejs22.x"
-      }
-    }
+    { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "^/$",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/serve_frontend.js"
-    }
-  ],
-  "outputDirectory": "public"
+    { "src": "^/$", "dest": "/public/index.html" },
+    { "src": "^/public/(.*)$", "dest": "/public/$1" }
+  ]
 }
