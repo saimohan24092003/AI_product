@@ -51,6 +51,6 @@
   "author": "CourseCraft Team",
   "license": "MIT",
   "engines": {
-    "node": ">=16.0.0"
+    "node": "18.x"
   }
 }
