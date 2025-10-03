@@ -51,7 +51,7 @@
   "author": "CourseCraft Team",
   "license": "MIT",
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "overrides": {
     "debug": "4.3.4"
