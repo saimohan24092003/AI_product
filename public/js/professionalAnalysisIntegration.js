@@ -4,7 +4,7 @@
  */
 
 // Configuration
-const PROFESSIONAL_BACKEND_URL = 'http://localhost:3000';
+const PROFESSIONAL_BACKEND_URL = 'https://ai-id-product-2.vercel.app/';
 const ANALYSIS_CHECK_INTERVAL = 2000; // 2 seconds
 
 // Global state

@@ -602,7 +602,7 @@ class HybridCommentWidget {
 let hybridCommentWidget;
 document.addEventListener('DOMContentLoaded', () => {
     hybridCommentWidget = new HybridCommentWidget({
-        apiBase: "http://localhost:3005"
+        apiBase: "https://ai-id-product-2.vercel.app/"
     });
     window.HybridCommentWidget = HybridCommentWidget;
     window.hybridCommentWidget = hybridCommentWidget;
