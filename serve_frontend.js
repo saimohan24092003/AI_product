@@ -3,7 +3,6 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 5173;
 
 // Enable CORS for backend communication
 app.use(cors({
@@ -22,8 +21,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`🌐 Frontend server running on http://localhost:${PORT}`);
-    console.log(`📁 Serving static files from: ${path.join(__dirname, 'public')}`);
-    console.log(`🔗 Backend connection: http://localhost:3005`);
-});
+// Export a handler for Vercel (@vercel/node)
+module.exports = (req, res) => {
+    return app(req, res);
+};
