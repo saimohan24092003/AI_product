@@ -1,94 +1,82 @@
-# 🚀 Quick Deployment Guide - Get Your Live Link in 5 Minutes!
+# Deploying CourseCraft AI Backend to Vercel
 
-## 📤 STEP 1: Upload Files to GitHub
+## Steps to Deploy
 
-Upload these **4 NEW/UPDATED files** to your `backend` folder:
+### 1. Push Backend to GitHub
+Create a **separate repository** for the Backend folder only, or use the existing repo with proper configuration.
 
-1. **src/routes/feedback.js** (NEW - Expert feedback API)
-2. **public/demo.html** (NEW - Expert review interface)
-3. **src/app.js** (UPDATED - Added feedback routes)
-4. **vercel.json** (NEW - Deployment config)
+### 2. Deploy to Vercel
 
-## 🆓 STEP 2: Deploy to Vercel (100% Free)
+#### Option A: Deploy via Vercel Dashboard
+1. Go to [vercel.com](https://vercel.com)
+2. Click "Add New Project"
+3. Import your GitHub repository
+4. **Important**: Set the **Root Directory** to `Backend` if deploying from a monorepo
+5. Vercel will auto-detect the Node.js project
 
-### Option A: Direct GitHub Connection (Recommended)
-1. Go to **https://vercel.com**
-2. Click **"Sign up"** → **"Continue with GitHub"**
-3. Click **"Import Project"**
-4. Select your **ai-instructional-design-backend** repository
-5. Configure:
-   ```
-   Root Directory: backend
-   ```
-6. Click **"Deploy"**
+#### Option B: Deploy via Vercel CLI
+```bash
+cd Backend
+npm install -g vercel
+vercel login
+vercel
+```
 
-### Option B: Drag & Drop (Alternative)
-1. Go to **https://vercel.com**
-2. Drag your entire `backend` folder to Vercel
-3. It will auto-deploy instantly
+### 3. Configure Environment Variables in Vercel
 
-## 🔑 STEP 3: Add Environment Variables
+Go to your project settings in Vercel and add these environment variables:
 
-In Vercel dashboard:
-1. Go to **"Settings"** → **"Environment Variables"**
-2. Add these variables:
-   ```
-   OPENAI_API_KEY = your_openai_key
-   JWT_SECRET = your_jwt_secret
-   SESSION_SECRET = your_session_secret
-   GOOGLE_CLIENT_ID = your_google_id
-   GOOGLE_CLIENT_SECRET = your_google_secret
-   MICROSOFT_CLIENT_ID = your_microsoft_id
-   MICROSOFT_CLIENT_SECRET = your_microsoft_secret
-   NODE_ENV = production
-   FRONTEND_ORIGIN = https://localhost:5173
-   REQUEST_LOGGING = true
-   ```
+```
+OPENAI_API_KEY=sk-your-actual-openai-key
+JWT_SECRET=your-random-jwt-secret
+SESSION_SECRET=your-random-session-secret
+FRONTEND_ORIGIN=https://your-frontend-url.vercel.app
+FRONTEND_URL=https://your-frontend-url.vercel.app
+NODE_ENV=production
+```
 
-## ✅ STEP 4: Get Your Live URL
+**Optional OAuth variables:**
+```
+GOOGLE_CLIENT_ID=your-google-id
+GOOGLE_CLIENT_SECRET=your-google-secret
+MICROSOFT_CLIENT_ID=your-microsoft-id
+MICROSOFT_CLIENT_SECRET=your-microsoft-secret
+```
 
-After deployment, you'll get URLs like:
-- **Main App:** `https://your-app-name.vercel.app`
-- **Expert Demo:** `https://your-app-name.vercel.app/demo.html` ← **Share this link with experts!**
+### 4. Update Frontend to Use Backend URL
 
-## 🎯 What Experts Will See
+After deployment, Vercel will give you a URL like: `https://your-backend.vercel.app`
 
-When experts visit your demo link:
-- Beautiful product showcase
-- Click anywhere to add feedback (like Figma/Marker.io)
-- Rate features 1-5 stars
-- Leave detailed expert comments
-- View all feedback in organized list
-- Export feedback to CSV
+Update your frontend code to use this URL instead of `http://localhost:3000`
 
-## 📊 Features Built for You
+### 5. Test the Deployment
 
-### Expert Feedback System:
-- ✅ Click-to-comment on any section
-- ✅ Expert ratings & detailed feedback
-- ✅ Comment categorization
-- ✅ Reply threads
-- ✅ Feedback statistics
-- ✅ CSV export for analysis
-- ✅ Professional UI like Marker.io
+```bash
+# Health check
+curl https://your-backend.vercel.app/api/health
 
-### Product Demo Sections:
-- 🎯 AI Learning Map Generator
-- 🔍 Content Analysis & Gap Detection
-- 💡 Personalized Learning Strategies
-- 📎 File Upload & Analysis Demo
+# Should return: {"status":"ok","message":"Server is running"}
+```
 
-## 🚨 Troubleshooting
+## Important Notes
 
-If deployment fails:
-1. Make sure all files are in `backend` folder
-2. Check environment variables are added
-3. Try redeploying from Vercel dashboard
+1. **Serverless Functions**: Vercel runs Node.js apps as serverless functions with 10-second timeout (hobby plan) or 60-second (pro plan)
+2. **File Uploads**: File uploads work but are stored in `/tmp` which is cleared between invocations
+3. **Cold Starts**: First request may be slow due to serverless cold start
+4. **MongoDB**: If using MongoDB, ensure you're using MongoDB Atlas (cloud) not local MongoDB
 
-## 📞 Need Help?
+## Troubleshooting
 
-If you get stuck at any step, just let me know the error message and I'll help you fix it immediately!
+### Build Fails with "Cannot find module"
+- Delete `package-lock.json` and `node_modules` locally
+- Run `npm install` to regenerate
+- Commit and push the new `package-lock.json`
 
----
+### CORS Errors
+- Ensure `FRONTEND_ORIGIN` is set correctly in Vercel environment variables
+- Check that frontend is using the correct backend URL
 
-**That's it! You'll have a live link to share with experts in under 5 minutes.** 🎉
+### 502 Bad Gateway
+- Check Vercel function logs for errors
+- Ensure all required environment variables are set
+- Verify OpenAI API key is valid
