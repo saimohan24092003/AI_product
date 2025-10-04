@@ -5,7 +5,7 @@
 
 class LocalCommentWidget {
     constructor(options = {}) {
-        this.position = options.position || 'bottom-right';
+        this.position = options.position || 'top-right';
         this.commentMode = false;
         this.commentPins = [];
         this.pinCounter = 0;

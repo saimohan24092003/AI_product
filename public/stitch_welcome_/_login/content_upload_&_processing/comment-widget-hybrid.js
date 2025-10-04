@@ -6,7 +6,7 @@
 class HybridCommentWidget {
     constructor(options = {}) {
         this.apiBase = options.apiBase || window.location.origin;
-        this.position = options.position || 'bottom-right';
+        this.position = options.position || 'top-right';
         this.commentMode = false;
         this.commentPins = [];
         this.pinCounter = 0;
@@ -602,7 +602,7 @@ class HybridCommentWidget {
 let hybridCommentWidget;
 document.addEventListener('DOMContentLoaded', () => {
     hybridCommentWidget = new HybridCommentWidget({
-        apiBase: "https://ai-id-product-2.vercel.app/"
+        apiBase: "https://coursecraft-backend-mohammed-asrafs-projects.vercel.app"
     });
     window.HybridCommentWidget = HybridCommentWidget;
     window.hybridCommentWidget = hybridCommentWidget;

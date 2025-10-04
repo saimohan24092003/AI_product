@@ -603,7 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Load professional analysis from session ID
 async function loadProfessionalAnalysisFromSession(sessionId) {
     try {
-        const response = await fetch(`https://ai-id-product-2.vercel.app//api/content/analysis-status/${sessionId}`);
+        const response = await fetch(`https://coursecraft-backend-mohammed-asrafs-projects.vercel.app/api/content/analysis-status/${sessionId}`);
 
         if (!response.ok) {
             throw new Error(`Failed to load analysis: ${response.status}`);
@@ -1261,8 +1261,8 @@ console.log('Content Analysis Results script loaded successfully');
 <!-- Add Universal Comment Widget - Expert can click anywhere to add feedback -->
 <script>
 window.commentWidgetConfig = {
-    apiBase: "http://localhost:3000",
-    position: "bottom-right"
+    apiBase: "https://coursecraft-backend-mohammed-asrafs-projects.vercel.app",
+    position: "top-right"
 };
 </script>
 <script src="./comment-widget-hybrid.js"></script>

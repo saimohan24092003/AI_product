@@ -6,7 +6,7 @@
 class SyncedCommentWidget {
     constructor(options = {}) {
         this.apiBase = options.apiBase || window.location.origin;
-        this.position = options.position || 'bottom-right';
+        this.position = options.position || 'top-right';
         this.commentMode = false;
         this.commentPins = [];
         this.pinCounter = 0;
