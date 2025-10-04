@@ -38,9 +38,7 @@ function generateSMEQuestions(content, domain) {
   const text = content.toLowerCase();
 
   // Always include these core questions
-  questions.push(`What are the primary learning objectives for this ${domain.toLowerCase()} content?`);
   questions.push(`Who is the target audience for this training material?`);
-  questions.push(`What prerequisite knowledge or skills are required?`);
 
   // Add domain-specific questions
   if (domain.includes('Healthcare')) {
@@ -125,7 +123,6 @@ export default async function handler(req, res) {
         domain: domain,
         reasoning: reasoning,
         summary: `Professional analysis completed for ${domain} content.`,
-        qualityScore: 85,
         recommendations: recommendations,
         smeQuestions: smeQuestions,
         defaultFrameworks: ['Blooms Taxonomy', 'ADDIE Model'], // Default pre-selected
