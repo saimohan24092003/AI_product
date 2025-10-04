@@ -125,4 +125,9 @@ router.get('/me', (req, res) => {
   res.json(req.user);
 });
 
+router.get('/ping', (req, res) => {
+  res.json({ pong: true });
+});
+
+
 export default router;
