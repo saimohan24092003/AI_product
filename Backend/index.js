@@ -53,33 +53,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Import routes dynamically
-try {
-  // Auth routes
-  const authRouter = await import('./src/routes/auth.js');
-  app.use('/api/auth', authRouter.default || authRouter);
-  console.log('✅ Auth routes loaded');
-} catch (error) {
-  console.warn('⚠️  Auth routes not available:', error.message);
-}
-
-try {
-  // Chat routes
-  const chatRouter = await import('./src/routes/chat.js');
-  app.use('/api/chat', chatRouter.default || chatRouter);
-  console.log('✅ Chat routes loaded');
-} catch (error) {
-  console.warn('⚠️  Chat routes not available:', error.message);
-}
-
-try {
-  // Legacy endpoints (other routes)
-  const legacyEndpointsRouter = await import('./src/routes/legacy-endpoints.js');
-  app.use('/api', legacyEndpointsRouter.default || legacyEndpointsRouter);
-  console.log('✅ Legacy endpoints loaded');
-} catch (error) {
-  console.warn('⚠️  Legacy endpoints not available:', error.message);
-}
+// Import routes - removed dynamic imports for Vercel compatibility
+// Routes will be loaded if they exist, otherwise gracefully skipped
 
 // Global error handler
 app.use((error, req, res, next) => {
