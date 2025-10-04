@@ -2,16 +2,17 @@
   "name": "coursecraft-ai-backend",
   "version": "1.0.0",
   "description": "CourseCraft AI Backend with ChatGPT integration",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node professional_server.js",
-    "dev": "nodemon professional_server.js",
-    "legacy": "node src/server.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "legacy": "node professional_server.js",
     "build": "echo 'No build needed for Node.js server'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "exceljs": "^4.4.0",
