@@ -50,21 +50,53 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Basic health check
-app.get('/api/health', async (req, res) => {
-  await connectDB();
+// Root route handler
+app.get('/', (req, res) => {
   res.json({
     status: 'ok',
     message: 'CourseCraft AI Backend is running',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    endpoints: {
+      health: '/api/health',
+      upload: '/api/upload',
+      analyze: '/api/analyze',
+      strategy: '/api/strategy',
+      learningMap: '/api/learning-map'
+    }
   });
 });
 
+// Basic health check
+app.get('/api/health', async (req, res) => {
+  try {
+    await connectDB();
+    res.json({
+      status: 'ok',
+      message: 'CourseCraft AI Backend is running',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+  } catch (error) {
+    res.status(200).json({
+      status: 'ok',
+      message: 'CourseCraft AI Backend is running',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      database: 'error',
+      error: error.message
+    });
+  }
+});
+
 app.get('/health', async (req, res) => {
-  await connectDB();
-  res.json({ status: 'ok' });
+  try {
+    await connectDB();
+    res.json({ status: 'ok', database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });
+  } catch (error) {
+    res.json({ status: 'ok', database: 'error' });
+  }
 });
 
 // Import routes - removed dynamic imports for Vercel compatibility
