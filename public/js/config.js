@@ -1,7 +1,7 @@
 // API Configuration for CourseCraft AI
 const API_CONFIG = {
   // Production Backend URL (Vercel)
-  BACKEND_URL: 'https://coursecraft-backend-mohammed-asrafs-projects.vercel.app',
+  BACKEND_URL: 'https://ai-product-backend-pied.vercel.app',
 
   // API Endpoints
   ENDPOINTS: {
